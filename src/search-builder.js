@@ -1,6 +1,6 @@
-const BuilderAbstract = require('./builder-abstract');
-const WhereBuilder = require('./where-builder');
-const OrderBuilder = require('./order-builder');
+const BuilderAbstract = require("./builder-abstract");
+const WhereBuilder = require("./where-builder");
+const OrderBuilder = require("./order-builder");
 
 const constructors = {
   filter: WhereBuilder,
@@ -13,7 +13,7 @@ class SearchBuilder extends BuilderAbstract {
    * @returns {(Object|null)} sequelize where query
    */
   getWhereQuery() {
-    return this.getQueryByType('filter');
+    return this.getQueryByType("filter");
   }
 
   /**
@@ -21,7 +21,7 @@ class SearchBuilder extends BuilderAbstract {
    * @returns {(Object|null)} sequelize order query
    */
   getOrderQuery() {
-    return this.getQueryByType('order');
+    return this.getQueryByType("order");
   }
 
   /**
@@ -31,10 +31,11 @@ class SearchBuilder extends BuilderAbstract {
    */
   getQueryByType(type) {
     const request = this.request[this.config.fields[type]];
-    return SearchBuilder
-      .prepareResponse(new constructors[type](this.Sequelize, request)
+    return SearchBuilder.prepareResponse(
+      new constructors[type](this.Sequelize, request)
         .setConfig(this.config)
-        .getQuery());
+        .getQuery()
+    );
   }
 
   /**
@@ -42,7 +43,13 @@ class SearchBuilder extends BuilderAbstract {
    * @returns {(int|null)} limit value
    */
   getLimitQuery() {
-    return SearchBuilder.prepareIntegerQuery(this.request[this.config.fields.limit]) || this.config['default-limit'] || null;
+    return (
+      SearchBuilder.prepareIntegerQuery(
+        this.request[this.config.fields.limit]
+      ) ||
+      this.config["default-limit"] ||
+      null
+    );
   }
 
   /**
@@ -50,7 +57,11 @@ class SearchBuilder extends BuilderAbstract {
    * @returns {(int|null)} offset value
    */
   getOffsetQuery() {
-    return SearchBuilder.prepareIntegerQuery(this.request[this.config.fields.offset]) || null;
+    return (
+      SearchBuilder.prepareIntegerQuery(
+        this.request[this.config.fields.offset]
+      ) || null
+    );
   }
 
   /**
@@ -73,8 +84,10 @@ class SearchBuilder extends BuilderAbstract {
    * @returns {(Object|null)} sequelize query
    */
   static prepareResponse(query) {
-    return (Object.keys(query).length === 0
-    && Object.getOwnPropertySymbols(query).length === 0) ? null : query;
+    return Object.keys(query).length === 0 &&
+      Object.getOwnPropertySymbols(query).length === 0
+      ? null
+      : query;
   }
 
   /**
@@ -84,7 +97,7 @@ class SearchBuilder extends BuilderAbstract {
    */
   static prepareIntegerQuery(query) {
     const intQuery = parseInt(query, 10);
-    return (Number.isInteger(intQuery) && intQuery >= 0) ? intQuery : null;
+    return Number.isInteger(intQuery) && intQuery >= 0 ? intQuery : null;
   }
 }
 

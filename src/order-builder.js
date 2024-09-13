@@ -1,4 +1,4 @@
-const BuilderAbstract = require('./builder-abstract');
+const BuilderAbstract = require("./builder-abstract");
 
 class OrderBuilder extends BuilderAbstract {
   getQuery() {
@@ -6,7 +6,7 @@ class OrderBuilder extends BuilderAbstract {
     const query = [];
 
     Object.keys(request).forEach((key) => {
-      const value = key.split('.');
+      const value = key.split(".");
       value.push(request[key]);
       query.push(value);
     });

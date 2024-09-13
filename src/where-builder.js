@@ -1,11 +1,25 @@
 /* eslint class-methods-use-this: ["error", { "exceptMethods": ["_getConditionQuery"] }] */
 
-const { Op } = require('sequelize');
-const BuilderAbstract = require('./builder-abstract');
-const helper = require('./helper');
+const { Op } = require("sequelize");
+const BuilderAbstract = require("./builder-abstract");
+const helper = require("./helper");
 
-const allowedConditions = ['gt', 'gte', 'lt', 'lte', 'ne', 'like', 'notLike', 'iLike', 'notILike', 'regexp', 'notRegexp', 'iRegexp', 'notIRegexp'];
-const allowedConditionsArray = ['between', 'notBetween', 'in', 'notIn'];
+const allowedConditions = [
+  "gt",
+  "gte",
+  "lt",
+  "lte",
+  "ne",
+  "like",
+  "notLike",
+  "iLike",
+  "notILike",
+  "regexp",
+  "notRegexp",
+  "iRegexp",
+  "notIRegexp",
+];
+const allowedConditionsArray = ["between", "notBetween", "in", "notIn"];
 
 class WhereBuilder extends BuilderAbstract {
   getQuery() {
@@ -14,12 +28,17 @@ class WhereBuilder extends BuilderAbstract {
 
     Object.keys(request).forEach((key) => {
       const fieldValue = request[key];
-      const fieldKey = helper.getFieldKey(key);
+      //const fieldKey = helper.getFieldKey(key);
+      const fieldKey = key;
 
       if (helper.isComparableField(fieldKey)) {
-        if (Array.isArray(fieldValue) || typeof fieldValue === 'string' || typeof fieldValue === 'number') {
+        if (
+          Array.isArray(fieldValue) ||
+          typeof fieldValue === "string" ||
+          typeof fieldValue === "number"
+        ) {
           Object.assign(query, helper.getEqualOp(fieldKey, fieldValue));
-        } else if (typeof fieldValue === 'object') {
+        } else if (typeof fieldValue === "object") {
           Object.assign(query, this._getFieldQuery(fieldKey, fieldValue));
         }
       }
@@ -29,7 +48,11 @@ class WhereBuilder extends BuilderAbstract {
 
   _getConditionQuery(query, request) {
     let conditionQuery = {};
-    if (typeof request._condition === 'string' && typeof query === 'object' && Object.keys(query).length !== 0) {
+    if (
+      typeof request._condition === "string" &&
+      typeof query === "object" &&
+      Object.keys(query).length !== 0
+    ) {
       conditionQuery = {
         [Op[request._condition]]: query,
       };
@@ -52,23 +75,25 @@ class WhereBuilder extends BuilderAbstract {
       .forEach((key) => {
         const value = values[key];
 
-        if (key === 'eq') {
-          fieldQuery.push(
-            helper.getEqualOp(fieldKey, value),
-          );
-        } else if (allowedConditions.includes(key)
-        || (allowedConditionsArray.includes(key) && Array.isArray(value))) {
+        if (key === "eq") {
+          fieldQuery.push(helper.getEqualOp(fieldKey, value));
+        } else if (
+          allowedConditions.includes(key) ||
+          (allowedConditionsArray.includes(key) && Array.isArray(value))
+        ) {
           fieldQuery.push({
             [fieldKey]: {
               [Op[key]]: value,
             },
           });
         } else {
-          helper.log('error', `${key} operator is missing`);
+          helper.log("error", `${key} operator is missing`);
         }
       });
 
-    return fieldQuery.length > 1 ? this._getConditionQuery(fieldQuery, values) : fieldQuery[0];
+    return fieldQuery.length > 1
+      ? this._getConditionQuery(fieldQuery, values)
+      : fieldQuery[0];
   }
 }
 

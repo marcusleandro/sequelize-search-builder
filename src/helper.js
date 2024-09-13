@@ -1,14 +1,14 @@
-const rc = require('rc');
-const defaultConfig = require('../config');
+const rc = require("rc");
+const defaultConfig = require("../config");
 
-const config = rc('sequelize-search-builder', defaultConfig);
+const config = rc("sequelize-search-builder", defaultConfig);
 
 const helpers = {
-  isComparableField: key => key[0] !== '_',
+  isComparableField: (key) => key[0] !== "_",
 
   getFieldKey: (key) => {
     let result = key;
-    if (key.indexOf('.') !== -1) {
+    if (key.indexOf(".") !== -1) {
       result = `$${key}$`;
     }
 

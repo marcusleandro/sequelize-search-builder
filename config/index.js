@@ -2,11 +2,11 @@ module.exports = {
   logging: false,
 
   fields: {
-    filter: 'filter',
-    order: 'order',
-    limit: 'limit',
-    offset: 'offset',
+    filter: "filter",
+    order: "order",
+    limit: "limit",
+    offset: "offset",
   },
 
-  'default-limit': 10,
+  "default-limit": 10,
 };
